@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jakob Ziemnicki</title>
+  <meta name="description" content="Director and screenwriter. ARD, ZDF, Berlinale. Berlin." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root { --white: #ffffff; --black: #111111; --muted: #999; --line: #e8e8e8; }
+
+    body {
+      font-family: 'Inter', -apple-system, Helvetica, sans-serif;
+      font-weight: 300;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      text-align: center;
+      padding: 1.1rem 2rem 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .site-name {
+      font-family: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
+      font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+      letter-spacing: 0.14em;
+      color: var(--black);
+      cursor: pointer;
+    }
+
+    /* ── SLIDESHOW ── */
+    #section-home {
+      position: relative;
+      width: 100%;
+      height: 78vh;
+      min-height: 400px;
+      background: #181818;
+      overflow: hidden;
+    }
+    .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease; }
+    .slide.active { opacity: 1; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .slide-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.16);
+    }
+    .slide-dots {
+      position: absolute; bottom: 1rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 7px; z-index: 5;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.28);
+      border: none; cursor: pointer; padding: 0;
+      transition: background 0.2s;
+    }
+    .dot.active { background: rgba(255,255,255,0.8); }
+
+    /* Nav-Box */
+    .nav-box {
+      position: fixed; top: 1.8rem; left: 1.8rem;
+      z-index: 100;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 0.9rem 1.4rem 0.9rem 1rem;
+      min-width: 110px;
+    }
+    .nav-box a {
+      display: block;
+      font-size: 0.65rem; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #888; text-decoration: none; line-height: 2;
+      cursor: pointer; transition: color 0.15s;
+    }
+    .nav-box a:hover, .nav-box a.active { color: #111; font-weight: 500; }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 4rem 3rem 6rem 11rem; max-width: 1060px; margin: 0 auto; }
+    #page-screenplay .filmografie-table td:nth-child(2) { white-space: nowrap; }
+    .page.visible { display: block; }
+
+    /* ── FILM GRID ── */
+    .film-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+    }
+    .film-card { position: relative; cursor: pointer; overflow: hidden; }
+    .film-card-img {
+      width: 100%; aspect-ratio: 2/3;
+      background: #bfbfbf;
+      position: relative; overflow: hidden;
+      display: flex; align-items: flex-end; padding: 0.8rem;
+    }
+    .film-card:nth-child(2) .film-card-img { background: #adadad; }
+    .film-card:nth-child(3) .film-card-img { background: #b8b8b8; }
+    .film-card:nth-child(4) .film-card-img { background: #b2b2b2; }
+    .film-card:nth-child(5) .film-card-img { background: #c2c2c2; }
+    .film-card:nth-child(6) .film-card-img { background: #a8a8a8; }
+    .film-card:nth-child(7) .film-card-img { background: #bababa; }
+    .film-card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .film-card:hover .film-card-img img { transform: scale(1.03); }
+    .film-card-img::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 70%;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 55%, transparent 100%);
+      pointer-events: none;
+    }
+    .film-card-overlay { position: relative; z-index: 1; }
+    .film-card-title {
+      font-family: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
+      font-size: 1.05rem; letter-spacing: 0.05em;
+      color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.65);
+      display: -webkit-box; line-height: 1.15;
+      -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .film-card-meta {
+      font-size: 0.58rem; letter-spacing: 0.09em;
+      text-transform: uppercase; color: rgba(255,255,255,0.62);
+      display: block; margin-top: 0.2rem;
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.52); z-index: 200;
+      align-items: flex-start; justify-content: center;
+      padding: 2rem; overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff; max-width: 560px; width: 100%;
+      padding: 0; position: relative;
+      margin: auto; /* zentriert auch vertikal wenn Platz da */
+    }
+    .modal-header {
+      display: flex; justify-content: flex-end;
+      padding: 0.8rem 1rem 0;
+      position: sticky; top: 0; background: #fff; z-index: 1;
+    }
+    .modal-close {
+      font-size: 1.5rem; color: #bbb; cursor: pointer;
+      background: none; border: none; line-height: 1; transition: color 0.15s;
+    }
+    .modal-close:hover { color: #111; }
+    .modal-body { padding: 0 2.5rem 2.5rem; }
+    .modal-title {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 1.55rem; letter-spacing: 0.07em;
+      color: #111; margin-bottom: 0.25rem;
+    }
+    .modal-meta {
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; margin-bottom: 1.3rem;
+    }
+    .modal-logline { font-size: 0.9rem; line-height: 1.82; color: #333; margin-bottom: 1.1rem; }
+    .modal-crew { font-size: 0.76rem; color: #555; line-height: 1.75; }
+    .modal-crew strong { color: #333; font-weight: 500; }
+    .modal-awards { font-size: 0.74rem; color: #666; line-height: 1.9; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid #f0f0f0; }
+    .modal-awards strong { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #bbb; display: block; margin-bottom: 0.3rem; font-weight: 400; }
+    .modal-trailer {
+      display: inline-block; margin-top: 1.4rem;
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #111; background: none; border: none; border-bottom: 1px solid #111;
+      padding-bottom: 0.1rem; cursor: pointer;
+    }
+    .modal-trailer:hover { opacity: 0.6; }
+
+    /* ── VIDEO MODAL ── */
+    .video-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88); z-index: 300;
+      align-items: center; justify-content: center; padding: 2rem;
+    }
+    .video-backdrop.open { display: flex; }
+    .video-wrap {
+      position: relative; width: 100%; max-width: 900px;
+    }
+    .video-close {
+      position: absolute; top: -2.2rem; right: 0;
+      font-size: 1.6rem; color: rgba(255,255,255,0.7);
+      background: none; border: none; cursor: pointer; line-height: 1;
+      transition: color 0.15s;
+    }
+    .video-close:hover { color: #fff; }
+
+    /* ── LIGHTBOX ── */
+    #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 200; align-items: center; justify-content: center; }
+    #lightbox.open { display: flex; }
+    #lightbox-img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+    #lightbox-close { position: absolute; top: 1.2rem; right: 1.5rem; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; }
+    #lightbox-close:hover { color: rgba(255,255,255,0.7); }
+    #lightbox-prev, #lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 2rem; cursor: pointer; padding: 1rem 1.2rem; transition: background 0.15s; }
+    #lightbox-prev:hover, #lightbox-next:hover { background: rgba(255,255,255,0.3); }
+    #lightbox-prev { left: 1rem; }
+    #lightbox-next { right: 1rem; }
+
+    .video-ratio {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+    }
+    .video-ratio iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+
+    /* ── TRAILER GRID ── */
+    .trailer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+    .trailer-item { display: flex; flex-direction: column; gap: 0.5rem; }
+    .trailer-ratio {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      background: #111;
+    }
+    .trailer-ratio iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+    .trailer-label {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 0.95rem; letter-spacing: 0.06em; color: #111;
+    }
+    .trailer-sublabel {
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa;
+      margin-top: -0.3rem;
+    }
+    .trailer-item { cursor: pointer; }
+    .trailer-thumb { cursor: pointer; position: relative; }
+    .trailer-thumb:hover { background: #222; }
+    .trailer-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem; color: rgba(255,255,255,0.5);
+      transition: color 0.2s, transform 0.2s;
+      pointer-events: none; line-height: 1;
+    }
+    .trailer-thumb:hover .trailer-play { color: rgba(255,255,255,0.88); transform: translate(-50%, -50%) scale(1.12); }
+    @media (max-width: 680px) {
+      .trailer-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── EXPLORE ── */
+    .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .photo-item { background: #d5d5d5; aspect-ratio: 1; overflow: hidden; }
+    .photo-item--wide { grid-column: span 2; aspect-ratio: 2/1; }
+    .photo-item:nth-child(3n) { background: #c4c4c4; }
+    .photo-item:nth-child(5n) { background: #ccc; }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── ABOUT ── */
+    .about-img { width: 100%; aspect-ratio: 16/7; background: #d8d8d8; overflow: hidden; margin-bottom: 3rem; }
+    .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-text p { font-size: 0.9rem; line-height: 1.9; color: #333; margin-bottom: 1rem; }
+    .about-text em { white-space: nowrap; }
+
+    /* ── FILMOGRAFIE TABLE ── */
+    .filmografie { margin-top: 3.5rem; }
+    .section-label {
+      display: block; font-size: 0.62rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #888; margin-bottom: 1.2rem;
+    }
+    .filmografie-table { width: 100%; border-collapse: collapse; }
+    .filmografie-table tr { border-bottom: 1px solid #f2f2f2; }
+    .filmografie-table tr:last-child { border-bottom: none; }
+    .filmografie-table td { padding: 0.55rem 0.8rem 0.55rem 0; font-size: 0.82rem; color: #444; vertical-align: top; }
+    .f-year { color: #bbb; font-size: 0.75rem; letter-spacing: 0.04em; white-space: nowrap; width: 3.2rem; }
+    .f-title { color: #222; font-weight: 400; }
+    .f-role { color: #999; font-size: 0.72rem; white-space: nowrap; padding-left: 1.5rem; }
+    .f-format { color: #999; font-size: 0.72rem; white-space: nowrap; padding-left: 1.5rem; }
+    .f-sender { color: #999; font-size: 0.72rem; padding-left: 1rem; }
+    @media (max-width: 680px) {
+      .f-format, .f-sender { display: none; }
+    }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 260px 1fr; gap: 4rem; align-items: start; }
+    .contact-img { width: 220px; aspect-ratio: 1/1; background: #d5d5d5; overflow: hidden; border-radius: 50%; }
+    .contact-img img { width: 100%; height: 100%; object-fit: cover; display: block; object-position: center 30%; }
+    .contact-name {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 2rem; letter-spacing: 0.1em; color: #111;
+      margin-bottom: 1.5rem; line-height: 1.05;
+    }
+    .contact-line {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.92rem; color: #444; text-decoration: none; margin-bottom: 0.5rem;
+    }
+    .contact-line:hover { color: #111; }
+    .contact-social { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.55rem; }
+    .contact-social a { display: flex; align-items: center; gap: 0.55rem; font-size: 0.88rem; color: #888; text-decoration: none; transition: color 0.15s; }
+    .contact-social a:hover { color: #111; }
+    .contact-social svg { flex-shrink: 0; opacity: 0.7; transition: opacity 0.15s; }
+    .contact-social a:hover svg { opacity: 1; }
+    .contact-location { font-size: 0.88rem; color: #aaa; margin-top: 1.2rem; }
+
+    /* ── IMPRESSUM ── */
+    .impressum-text { max-width: 540px; }
+    .impressum-text h2 {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.08em; margin-bottom: 1.8rem; color: #111;
+    }
+    .impressum-text h3 {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #aaa; margin: 1.6rem 0 0.5rem;
+    }
+    .impressum-text p { font-size: 0.88rem; line-height: 1.8; color: #444; }
+    .impressum-text a { color: #444; }
+
+    /* ── MANIFEST ── */
+    .manifest-body { max-width: 640px; }
+    .manifest-body p {
+      font-size: 1.05rem; line-height: 1.85; color: #111; font-weight: 300;
+      margin-bottom: 1.6rem;
+    }
+    .manifest-body p:last-child { margin-bottom: 0; }
+    .manifest-sig {
+      font-size: 0.88rem !important; color: #999; margin-top: 2.4rem !important;
+      font-style: italic;
+    }
+
+    /* ── EXCERPT MODAL ── */
+    .excerpt-logline {
+      font-size: 0.9rem; line-height: 1.82; color: #333; margin-bottom: 1.4rem;
+      font-style: italic;
+    }
+    .excerpt-body {
+      font-size: 0.88rem; line-height: 1.9; color: #444; position: relative;
+    }
+    .excerpt-fade {
+      position: relative; margin-top: 0.5rem;
+    }
+    .excerpt-fade::after {
+      content: ''; display: block;
+      height: 4rem;
+      background: linear-gradient(to bottom, transparent, #ffffff);
+      margin-top: -1rem;
+    }
+    .excerpt-dots {
+      text-align: center; color: #ccc; font-size: 1.2rem;
+      letter-spacing: 0.3em; padding: 0.5rem 0 0.2rem;
+    }
+    .excerpt-contact {
+      display: inline-block; margin-top: 1.6rem;
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #111; border-bottom: 1px solid #111; padding-bottom: 0.1rem;
+      text-decoration: none;
+    }
+    .excerpt-contact:hover { opacity: 0.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--line); padding: 1.4rem 3rem;
+      max-width: 1060px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+    }
+    footer p, footer a { font-size: 0.7rem; color: #999; text-decoration: none; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 680px) {
+      .film-grid { grid-template-columns: repeat(2, 1fr); }
+      .photo-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .page { padding: 3rem 1.5rem 5rem 9rem; }
+      .nav-box { left: 1rem; top: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <span class="site-name" onclick="showPage('home')">JAKOB ZIEMNICKI</span>
+  </header>
+
+  <!-- NAV (fixed, always visible) -->
+  <nav class="nav-box">
+    <a class="active" onclick="showPage('home')">Start</a>
+    <a onclick="showPage('director')">Regie</a>
+    <a onclick="showPage('screenplay')">Drehbuch</a>
+    <a onclick="showPage('trailer')">Trailer</a>
+    <a onclick="showPage('explore')">Einblicke</a>
+    <a onclick="showPage('manifest')">Haltung</a>
+    <a onclick="showPage('about')">Vita</a>
+    <a onclick="showPage('contact')">Kontakt</a>
+  </nav>
+
+  <!-- SLIDESHOW -->
+  <section id="section-home">
+    <div class="slide active"><img src="assets/slide_01.jpg" alt="" style="object-position: center bottom;"></div>
+    <div class="slide"><img src="Filmstills%20Auswahl/02_3.png" alt=""></div>
+    <div class="slide"><img src="assets/slide_03.jpg" alt="" style="object-position: center top;"></div>
+    <div class="slide"><img src="assets/slide_04.jpg" alt=""></div>
+    <div class="slide"><img src="Filmstills%20Auswahl/PolnischeOstern1.png" alt=""></div>
+    <div class="slide"><img src="assets/slide_11.jpg" alt=""></div>
+    <div class="slide"><img src="assets/slide_05_v2.jpg" alt=""></div>
+    <div class="slide"><img src="assets/slide_07.jpg" alt=""></div>
+    <div class="slide"><img src="assets/slide_08.jpg" alt="" style="object-position: center top;"></div>
+    <div class="slide"><img src="assets/slide_09_v2.jpg" alt=""></div>
+    <div class="slide"><img src="assets/slide_12.jpg" alt="" style="object-position: center top;"></div>
+    <div class="slide"><img src="assets/slide_10_v2.png" alt=""></div>
+    <div class="slide"><img src="assets/slide_13_v2.jpg" alt="" style="object-fit: contain; background: #fff;"></div>
+    <div class="slide"><img src="assets/slide_14.jpg" alt=""></div>
+
+    <div class="slide-dots" id="slide-dots"></div>
+  </section>
+
+  <!-- DIRECTOR — 7 Filme, neueste zuerst -->
+  <div id="page-director" class="page">
+    <div class="film-grid">
+
+      <div class="film-card" onclick="openModal('wolfsjagd')">
+        <div class="film-card-img">
+          <img src="assets/poster-wolfsjagd.jpg" alt="Wolfsjagd">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Wolfsjagd</span>
+            <span class="film-card-meta">2023 · ARD / Degeto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('todesengel')">
+        <div class="film-card-img">
+          <img src="assets/poster-todesengel.jpg" alt="Todesengel">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Todesengel</span>
+            <span class="film-card-meta">2019 · ARD / Degeto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('beste')">
+        <div class="film-card-img">
+          <img src="assets/poster-beste.jpg" alt="Das Beste für mein Kind">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Polizeiruf 110 — Das Beste für mein Kind</span>
+            <span class="film-card-meta">2017 · RBB / ARD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('grenzgaenger')">
+        <div class="film-card-img">
+          <img src="assets/poster-grenzgaenger.jpg" alt="Grenzgänger">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Polizeiruf 110 — Grenzgänger</span>
+            <span class="film-card-meta">2015 · RBB / ARD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('ostern')">
+        <div class="film-card-img">
+          <img src="assets/poster-ostern.jpg" alt="Polnische Ostern">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Polnische Ostern</span>
+            <span class="film-card-meta">2011 · Kino · ZDF / Das kleine Fernsehspiel</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('mai')">
+        <div class="film-card-img">
+          <img src="assets/poster-mai.jpg" alt="1. Mai — Helden bei der Arbeit">
+          <div class="film-card-overlay">
+            <span class="film-card-title">1. Mai — Helden bei der Arbeit</span>
+            <span class="film-card-meta">2008 · Kino · Berlinale</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-card" onclick="openModal('tompson')">
+        <div class="film-card-img">
+          <img src="Filmposter/Tompson_Poster_Neu.jpg" alt="Tompson Musik">
+          <div class="film-card-overlay">
+            <span class="film-card-title">Tompson Musik</span>
+            <span class="film-card-meta">2004 · ZDF / arte</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCREENPLAY -->
+  <div id="page-screenplay" class="page">
+    <div style="max-width:760px;">
+      <table class="filmografie-table">
+        <tr><td style="color:#999;width:5.5rem;">2026</td><td><strong>„Showtrial"</strong></td><td style="color:#999;width:8rem;">Serie</td><td>Serienadaption mit Marianne Wendt · Windlight Pictures</td></tr>
+        <tr><td style="color:#999;">2025</td><td><strong>„Tatort Hamburg – Romina"</strong></td><td style="color:#999;">TV-Reihe</td><td>Stoffentwicklung mit Thomas André Szabó · Wüstefilm</td></tr>
+        <tr><td style="color:#999;">2025</td><td><strong>„In Bed with the Devil"</strong></td><td style="color:#999;">Kinofilm</td><td>Stoffentwicklung mit Marianne Wendt</td></tr>
+        <tr><td style="color:#999;">2024–25</td><td><strong>„Last Percent"</strong></td><td style="color:#999;">Mini-Serie</td><td>Stoffentwicklung mit Marianne Wendt &amp; Christian Schiller</td></tr>
+        <tr><td style="color:#999;">2024–25</td><td><strong>„My Perfect Wrong Life"</strong></td><td style="color:#999;">Mini-Serie</td><td>Stoffentwicklung mit Krystof Wizisla</td></tr>
+        <tr><td style="color:#999;">2021–22</td><td><strong>„Ankommen"</strong></td><td style="color:#999;">Mini-Serie</td><td>Stoffentwicklung mit Jasmina Wesolowski · Studio Zentral</td></tr>
+        <tr><td style="color:#999;">2020–22</td><td><strong>„Baltic Noir"</strong></td><td style="color:#999;">Mini-Serie</td><td>Konzept und Entwicklung</td></tr>
+        <tr><td style="color:#999;">2018–19</td><td><strong>„Engel von Neukölln"</strong></td><td style="color:#999;">Kinofilm</td><td>Stoffentwicklung mit Elke Rössler</td></tr>
+        <tr><td style="color:#999;">2017–18</td><td><strong>„Tatort Berlin – Ausgeliefert"</strong></td><td style="color:#999;">TV-Reihe</td><td>Stoffentwicklung mit Marianne Wendt · Wiedemann &amp; Berg · RBB</td></tr>
+        <tr><td style="color:#999;">2014–15</td><td><strong>„Späzle mit Wodka"</strong></td><td style="color:#999;">Comedy-Serie</td><td>Stoffentwicklung, Konzeption, Pilot-Drehbuch mit Dagmar Rehbinder · UFA Serial Drama · SWR</td></tr>
+        <tr><td style="color:#999;">2012–14</td><td><strong>„Killing Berlin"</strong></td><td style="color:#999;">Mini-Serie</td><td>Stoffentwicklung, Konzeption &amp; Drehbuch mit Katrin Milhahn &amp; Antonia Rothe-Liermann · UFA Fiction · RTL</td></tr>
+        <tr><td style="color:#999;">2012–13</td><td><strong>„Neger auf Skiern"</strong></td><td style="color:#999;">Kinofilm</td><td>Drehbuch mit Katrin Milhahn · FFA · Frisbee Films GmbH</td></tr>
+        <tr><td style="color:#999;">2009–11</td><td><strong>„Viva Polonia"</strong></td><td style="color:#999;">Kinofilm</td><td>Adaption des Bestsellers von Steffen Möller mit Daniel Schwarz · UFA Cinema</td></tr>
+        <tr><td style="color:#999;">2005</td><td><strong>„Hand ins Feuer"</strong></td><td style="color:#999;">Kinofilm</td><td>Stoffentwicklung mit Bernd Lange · Polyphon Film &amp; Fernseh · ZDF</td></tr>
+        <tr><td style="color:#999;">2004–05</td><td><strong>„Mairitter"</strong></td><td style="color:#999;">Kinofilm</td><td>Drehbuch mit Marc O. Seng · Teamworx · SWR / WDR</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRAILER -->
+  <div id="page-trailer" class="page">
+    <div class="trailer-grid">
+
+      <div class="trailer-item" data-vimeo="868750264" onclick="openVideoDirectly('https://vimeo.com/868750264')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Wolfsjagd</div>
+        <div class="trailer-sublabel">2023 · ARD / Degeto</div>
+      </div>
+
+      <div class="trailer-item" data-vimeo="393254952" onclick="openVideoDirectly('https://vimeo.com/393254952')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Todesengel</div>
+        <div class="trailer-sublabel">2019 · ARD / Degeto</div>
+      </div>
+
+      <div class="trailer-item" data-vimeo="267762828" onclick="openVideoDirectly('https://vimeo.com/267762828')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Polizeiruf 110 — Das Beste für mein Kind</div>
+        <div class="trailer-sublabel">2017 · RBB / ARD / TVP1</div>
+      </div>
+
+      <div class="trailer-item" data-vimeo="275985402" onclick="openVideoDirectly('https://vimeo.com/275985402')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Polizeiruf 110 — Grenzgänger</div>
+        <div class="trailer-sublabel">2015 · RBB / ARD</div>
+      </div>
+
+      <div class="trailer-item" onclick="openVideoDirectly('https://vimeo.com/376137860')">
+        <div class="trailer-ratio trailer-thumb" style="background-image:url('assets/poster-ostern.jpg');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Polnische Ostern</div>
+        <div class="trailer-sublabel">2011 · Kino · ZDF / Das kleine Fernsehspiel</div>
+      </div>
+
+      <div class="trailer-item" data-vimeo="394144601" onclick="openVideoDirectly('https://vimeo.com/394144601')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">1. Mai — Helden bei der Arbeit</div>
+        <div class="trailer-sublabel">2008 · Kino · Berlinale</div>
+      </div>
+
+      <div class="trailer-item" data-vimeo="512247942" onclick="openVideoDirectly('https://vimeo.com/512247942')">
+        <div class="trailer-ratio trailer-thumb"><span class="trailer-play">▶</span></div>
+        <div class="trailer-label">Tompson Musik</div>
+        <div class="trailer-sublabel">2004 · ZDF / arte</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXPLORE -->
+  <div id="page-explore" class="page">
+    <div class="photo-grid">
+      <!-- row 1: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_wj_af_ck-2072.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_190423-5088.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-115.jpg" alt="" loading="lazy"></div>
+      <!-- row 2: 4 normal -->
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-203.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_20100406-1157.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-132.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_polizeiruf2015_007.jpg" alt="" loading="lazy"></div>
+      <!-- row 3: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_bab_cc__035a_077_02.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-170.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-30.jpg" alt="" loading="lazy"></div>
+      <!-- row 4: 4 normal -->
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-142.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-194.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_20100406-1158.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-215.jpg" alt="" loading="lazy"></div>
+      <!-- row 5: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_wj_af_ck-2453.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_20100407-1219.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_wj_af_ck-5297.jpg" alt="" loading="lazy"></div>
+      <!-- row 6: 4 normal -->
+      <div class="photo-item"><img src="assets/ds_polizeiruf2015_011.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_20100407-1213.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-32.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="Drehstills/DSC00203.JPG" alt="" loading="lazy"></div>
+      <!-- row 7: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_pr_bab_af-267.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_wj_af_ck-8171.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-292.jpg" alt="" loading="lazy"></div>
+      <!-- row 8: 4 normal -->
+      <div class="photo-item"><img src="assets/ds_20100407-1216.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_img-20150729-wa0004.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-310.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-46.jpg" alt="" loading="lazy"></div>
+      <!-- row 9: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_wj_af_ck-94373.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_pr_bab_af-380.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-74.jpg" alt="" loading="lazy"></div>
+      <!-- row 10: 4 normal -->
+      <div class="photo-item"><img src="assets/ds_20100429-2489.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_polizeiruf2015_014.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_190411-0126.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_p1090875.jpg" alt="" loading="lazy"></div>
+      <!-- row 11: wide + 2 normal -->
+      <div class="photo-item photo-item--wide"><img src="assets/ds_setfotos_polizeiruf_kind-83.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_wj_af_ck-96204.jpg" alt="" loading="lazy"></div>
+      <div class="photo-item"><img src="assets/ds_setfotos_polizeiruf_kind-85.jpg" alt="" loading="lazy"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="page-about" class="page">
+    <div class="about-img">
+      <img src="Fotos%20Jakob/Set_Silhouette.jpg" alt="Filmset" style="object-position: center 40%;">
+    </div>
+    <div class="about-text">
+      <p>
+        Jakob Ziemnicki wurde 1975 in Gdańsk, Polen geboren und floh 1980 mit seiner Familie
+        kurz vor der Verhängung des Kriegsrechts nach Deutschland. Schon als Schüler in Köln
+        drehte er erste Kurzfilme mit Freunden.
+      </p>
+      <p>
+        Nach dem Abitur am Deutsch-Französischen Gymnasium Kreuzgasse studierte er Philosophie
+        und Germanistik an der Universität Köln. Parallel dazu machte er Praktika bei
+        Produktionsfirmen, arbeitete im Jugendfilm Club Köln und im Kölner Filmhaus und sammelte
+        erste Erfahrungen als Regieassistent und Cutter. Gemeinsam mit Philipp Stennert realisierte
+        er den Low-Budget-Spielfilm <em>Dark</em> (1998), der auf dem Fantasy Filmfest,
+        dem Brussels International Horror Festival und zahlreichen weiteren Festivals lief.
+      </p>
+      <p>
+        Von 1998 bis 2004 studierte er Regie und Drehbuch an der Filmakademie Baden-Württemberg
+        in Ludwigsburg. Sein Diplomfilm <em>Tompson&nbsp;Musik</em> (2004) nach einer Kurzgeschichte
+        von Judith Hermann gewann zahlreiche internationale Preise — darunter den
+        Robert-Bosch-Förderpreis — und wurde für den Prix Europa und den First Steps Award nominiert.
+        Als Teil der German-Films-Kurzfilmrolle lief er in Cannes, Venedig und Locarno.
+      </p>
+      <p>
+        Der Episodenfilm <em>1.&nbsp;Mai&nbsp;—&nbsp;Helden&nbsp;bei&nbsp;der&nbsp;Arbeit</em> (2008)
+        feierte seine Premiere auf der Berlinale und die Tragikomödie <em>Polnische&nbsp;Ostern</em>
+        (2011) beim Max Ophüls Filmfestival in Saarbrücken.
+      </p>
+      <p>
+        2014/15 entwickelte er für den RBB das Konzept der neuen deutsch-polnischen
+        <em>Polizeiruf-110</em>-Reihe in Frankfurt/&nbsp;Świecko. Er&nbsp;schrieb und inszenierte
+        <em>Grenzgänger</em> (2015) und <em>Das&nbsp;Beste&nbsp;für&nbsp;mein&nbsp;Kind</em> (2017),
+        die zeitgleich in Deutschland und Polen ausgestrahlt wurden und großes Medienecho hatten.
+      </p>
+      <p>
+        Für ARD/Degeto inszenierte er den Neo-Noir-Thriller <em>Todesengel</em> (2019)
+        nach Craig Russells Bestseller <em>Walküre</em>, gefolgt vom Öko-Thriller
+        <em>Wolfsjagd</em> (2023).
+      </p>
+      <p>
+        Deutsch und Polnisch sind seine Muttersprachen, Englisch und Französisch spricht er fließend.
+        Er lebt mit seiner Familie in&nbsp;Berlin.
+      </p>
+    </div>
+
+    <div class="filmografie">
+      <span class="section-label">Filmografie</span>
+      <table class="filmografie-table">
+        <tbody>
+          <tr><td class="f-year">2023</td><td class="f-title">Wolfsjagd</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">TV-Film</td><td class="f-sender">ARD / Degeto</td></tr>
+          <tr><td class="f-year">2019</td><td class="f-title">Todesengel</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">TV-Film</td><td class="f-sender">ARD / Degeto</td></tr>
+          <tr><td class="f-year">2017</td><td class="f-title">Polizeiruf 110 — Das Beste für mein Kind</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">TV-Film</td><td class="f-sender">RBB / ARD / TVP1</td></tr>
+          <tr><td class="f-year">2015</td><td class="f-title">Polizeiruf 110 — Grenzgänger</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">TV-Film</td><td class="f-sender">RBB / ARD / TVP1</td></tr>
+          <tr><td class="f-year">2011</td><td class="f-title">Polnische Ostern</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">Kinofilm</td><td class="f-sender">ZDF / Das kleine Fernsehspiel</td></tr>
+          <tr><td class="f-year">2008</td><td class="f-title">1. Mai — Helden bei der Arbeit</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">Kinofilm</td><td class="f-sender">HR / arte · Berlinale</td></tr>
+          <tr><td class="f-year">2004</td><td class="f-title">Tompson Musik</td><td class="f-role">Regie</td><td class="f-format">Diplomfilm</td><td class="f-sender">ZDF / arte · Filmakademie BW</td></tr>
+          <tr><td class="f-year">1998</td><td class="f-title">Dark</td><td class="f-role">Regie &amp; Buch</td><td class="f-format">Kinofilm</td><td class="f-sender">Fantasy Filmfest · Brussels Int. Horror Festival u.a.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div id="page-contact" class="page">
+    <div class="contact-grid">
+      <div class="contact-img">
+        <img src="Fotos%20Jakob/Jakob%20Farbe%20WB.png" alt="Jakob Ziemnicki">
+      </div>
+      <div>
+        <div class="contact-name">JAKOB ZIEMNICKI</div>
+        <a class="contact-line" href="mailto:info@ziemnicki.de">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m2 7 10 7 10-7"/>
+          </svg>
+          info@ziemnicki.de
+        </a>
+        <p class="contact-location">Berlin, Deutschland</p>
+        <div class="contact-social">
+          <a href="https://vimeo.com/showcase/6696566" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609-3.268 4.247-6.026 6.37-8.29 6.37-1.409 0-2.578-1.294-3.553-3.881L5.322 11.4C4.603 8.816 3.834 7.522 3.01 7.522c-.179 0-.806.378-1.881 1.132L0 7.197c1.185-1.044 2.351-2.084 3.501-3.128C5.08 2.701 6.266 1.984 7.055 1.91c1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.507.539 2.45 1.131 3.674 1.776 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.612-2.061-.574 0-1.167.121-1.777.391 1.186-3.868 3.434-5.757 6.762-5.637 2.473.06 3.628 1.664 3.478 4.807z"/></svg>
+            Vimeo
+          </a>
+          <a href="https://www.instagram.com/jakobziemnicki/" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            Instagram
+          </a>
+          <a href="https://www.linkedin.com/in/jakob-ziemnicki-5231951b8" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://www.facebook.com/jakob.ziemnicki" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HALTUNG / MANIFEST -->
+  <div id="page-manifest" class="page">
+    <div class="manifest-body">
+
+      <p>In einem kleinen Zimmer in Köln-Chorweiler stand ein Plattenspieler. Ich war sechs, wir waren gerade aus Polen geflohen, und auf dem Teller drehten sich Winnetou und die Schatzinsel. Später kam das Dschungelbuch dazu. Draußen grauer Waschbeton. Drinnen öffneten sich Türen in Welten, die ich noch nie gesehen hatte: Landschaften und Figuren. In meiner Phantasie, lange bevor ich die Bilder dazu kannte.</p>
+
+      <p>Einen Fernseher bekamen wir erst zwei Jahre später. Und das änderte alles. Im ZDF lief „Der phantastische Film", viel zu spät für einen Grundschüler. Ich nervte meine Eltern so lange, bis sie es erlaubten. Ich musste „vorschlafen", um dann mit ihnen Planet der Affen, Tanz der Vampire, Die Vögel oder Der Mieter zu sehen. Bis heute sehe ich die Gesichter. Charlton Heston, als er begreift, dass der Planet der Affen die Erde ist. Tippi Hedren, deren Blick erstarrt, als die Vögel kommen. Ein Bruchteil einer Sekunde, in dem man das Innere sieht. Das interessiert mich noch heute am meisten.</p>
+
+      <p>Mit achtzehn drehte ich mit Freunden meinen ersten Langfilm: DARK. Ohne Budget, ohne Filmschule. Wir machten es einfach. Der Film funktionierte, weil wir etwas erzählt hatten, das wahrhaftig war. Figuren, die damit rangen, erwachsen zu werden, und Entscheidungen trafen, die Konsequenzen hatten. Genauso wie wir.</p>
+
+      <p>Gute Filme entstehen aus dem Drang, etwas erzählen zu wollen. Doch dafür braucht es Haltung. Und die lernte ich von Tom Toelle. An der Filmakademie in Ludwigsburg machte er mir klar, dass Regie Verantwortung bedeutet. Sein Credo: „Du kannst nur inszenieren, was du wirklich siehst." Seitdem frage ich mich immer zuerst: Warum erzähle ich das? Was bin ich bereit, dafür zu riskieren? Whydunnit statt Whodunnit. Was treibt eine Figur an?</p>
+
+      <p>Die wichtigste Aufgabe eines Regisseurs ist für mich die Arbeit mit den Schauspieler*innen. Sie sind das Gesicht des Films. Kieślowskis Ausspruch „Stay close to the actors" wurde zu meinem heimlichen Regiecredo: die besten Momente entstehen, wenn man aufhört, sie zu kontrollieren. Deshalb schaffe ich bei Proben und am Set immer einen Safe-Space, einen Raum, in dem Risikobereitschaft und Verletzlichkeit möglich sind. Ohne Angst, sich zu blamieren.</p>
+
+      <p>Film ist Teamarbeit. Das weiß ich als alter „Fußballer". Die Verantwortung für den Gesamtton und für die Präzision der Erzählung liegt bei der Regie, aber ohne das Team gibt es keinen Film.</p>
+
+      <p>Lange Zeit wollte ich mich mit meiner polnischen Herkunft nicht auseinandersetzen. Trotzdem zog es mich seit Tompson Musik immer wieder zurück, nach Polen. Polnische Ostern. Die Polizeiruf-Folgen des RBB. Stück für Stück habe ich so meine zweite Identität wiederentdeckt, Anschluss an die polnische Kunst und Kultur gefunden, mit großartigen Filmschaffenden aus Polen gearbeitet, die Klassiker des polnischen Kinos nachgeschaut. Und eines Abends im Nationaltheater in Warschau habe ich es verstanden: diese osteuropäische Melancholie, dieser polnische Fatalismus, dieses Weder-ganz-deutsch-noch-ganz-polnisch-Sein. Das alles ist ein Teil von mir. Es gibt kein Schwarz-Weiß. Nur viele Grautöne. Genau deshalb ist Beliebigkeit in Filmen für mich keine Option.</p>
+
+      <p>Ein Film ist nur dann gut, wenn er im Publikum weiterlebt. Alles andere ist lauwarme Soße, wie David Lynch das einmal so perfekt gesagt hat.</p>
+
+      <p class="manifest-sig">— Jakob Ziemnicki im Frühjahr 2026</p>
+
+    </div>
+  </div>
+
+  <!-- IMPRESSUM -->
+  <div id="page-impressum" class="page">
+    <div class="impressum-text">
+      <h2>Impressum</h2>
+
+      <h3>Angaben gemäß § 5 TMG</h3>
+      <p>
+        Jakob Ziemnicki<br>
+        Fidicinstr. 21<br>
+        10965 Berlin<br>
+        Deutschland
+      </p>
+
+      <h3>Kontakt</h3>
+      <p>
+        E-Mail: <a href="mailto:info@ziemnicki.de">info@ziemnicki.de</a>
+      </p>
+
+      <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+      <p>
+        Jakob Ziemnicki<br>
+        Fidicinstr. 21, 10965 Berlin
+      </p>
+
+      <h3>Urheberrecht</h3>
+      <p>
+        Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten
+        unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung,
+        Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes
+        bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+      </p>
+
+      <h3>Bildnachweise</h3>
+      <p>
+        Portrait-Foto und Vita-Foto: © Jakob Ziemnicki<br>
+        Filmstills <em>Wolfsjagd</em> (2023): Kamera Benjamin Dernbecher, Standfoto Conny Klein<br>
+        Filmstills <em>Todesengel</em> (2019): Kamera Jakob Beurle, Standfoto Georges Pauly<br>
+        Filmstills <em>Polizeiruf 110 — Das Beste für mein Kind</em> (2017): Kamera Gunnar Fuß, Standfoto Andrea Hansen<br>
+        Filmstills <em>Polizeiruf 110 — Grenzgänger</em> (2015): Kamera Matthias Fleischer, Standfoto Conny Klein<br>
+        Filmstills <em>Polnische Ostern</em> (2011): Kamera Benjamin Dernbecher, Standfoto Georges Pauly<br>
+        Filmstills <em>1. Mai — Helden bei der Arbeit</em> (2008): Kamera Kolja Raschke u.a., Standfoto Jochen Roeder<br>
+        Filmstills <em>Tompson Musik</em> (2004): Kamera Sten Mende, Standfoto Sibylle Baier
+      </p>
+    </div>
+  </div>
+
+  <!-- DATENSCHUTZ -->
+  <div id="page-datenschutz" class="page">
+    <div class="impressum-text">
+      <h2>Datenschutzerklärung</h2>
+
+      <h3>1. Verantwortlich</h3>
+      <p>
+        Jakob Ziemnicki<br>
+        Fidicinstr. 21<br>
+        10965 Berlin<br>
+        E-Mail: <a href="mailto:info@ziemnicki.de">info@ziemnicki.de</a>
+      </p>
+
+      <h3>2. Hosting (GitHub Pages)</h3>
+      <p>
+        Diese Website wird über GitHub Pages gehostet, einen Dienst der GitHub, Inc.,
+        88 Colin P Kelly Jr St, San Francisco, CA 94107, USA.
+        Beim Aufruf der Seiten werden automatisch sogenannte Server-Logfiles gespeichert
+        (z.&nbsp;B. IP-Adresse, Datum und Uhrzeit, Browsertyp). Diese Daten sind für den
+        Betrieb der Website erforderlich und werden nach kurzer Zeit automatisch gelöscht.
+        Eine Zusammenführung mit anderen Datenquellen erfolgt nicht.
+      </p>
+      <p>
+        Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem
+        sicheren und funktionsfähigen Betrieb der Website).
+      </p>
+
+      <h3>3. Cookies</h3>
+      <p>
+        Diese Website setzt ausschließlich technisch notwendige Cookies, die für die
+        Funktion und Sicherheit der Seite erforderlich sind. Es werden keine Tracking-
+        oder Marketing-Cookies verwendet.
+      </p>
+
+      <h3>4. Rechte der betroffenen Personen</h3>
+      <p>
+        Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung
+        der Verarbeitung Ihrer personenbezogenen Daten sowie auf Datenübertragbarkeit.
+        Außerdem haben Sie ein Beschwerderecht bei einer Aufsichtsbehörde.
+      </p>
+
+      <h3>5. Aktualität</h3>
+      <p>Diese Datenschutzerklärung ist aktuell gültig (Stand: Mai 2026).</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Jakob Ziemnicki</p>
+    <a href="#" onclick="showPage('impressum'); return false;">Impressum</a>
+    <a href="#" onclick="showPage('datenschutz'); return false;">Datenschutz</a>
+  </footer>
+
+  <!-- FILM MODAL -->
+  <div class="modal-backdrop" id="modal-backdrop" onclick="closeModalBackdrop(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-meta" id="modal-meta"></div>
+        <p class="modal-logline" id="modal-logline"></p>
+        <div class="modal-crew" id="modal-crew"></div>
+        <div class="modal-awards" id="modal-awards"></div>
+        <button class="modal-trailer" id="modal-trailer-btn" onclick="openVideo()">▶ &nbsp;Trailer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXCERPT MODAL (Stoffe) -->
+  <div class="modal-backdrop" id="excerpt-backdrop" onclick="closeExcerptBackdrop(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeExcerpt()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title" id="excerpt-title"></div>
+        <div class="modal-meta" id="excerpt-meta"></div>
+        <p class="excerpt-logline" id="excerpt-logline"></p>
+        <div class="excerpt-body">
+          <div class="excerpt-fade" id="excerpt-text"></div>
+          <div class="excerpt-dots">· · ·</div>
+        </div>
+        <a class="excerpt-contact" href="mailto:info@ziemnicki.de">Anfragen</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox">
+    <button id="lightbox-close">×</button>
+    <button id="lightbox-prev">&#8592;</button>
+    <button id="lightbox-next">&#8594;</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div class="video-backdrop" id="video-backdrop" onclick="closeVideoBackdrop(event)">
+    <div class="video-wrap">
+      <button class="video-close" onclick="closeVideo()">×</button>
+      <div class="video-ratio">
+        <iframe id="video-iframe" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── FILM DATA ── */
+    const films = {
+      wolfsjagd: {
+        title: 'Wolfsjagd',
+        meta: '2023 · TV-Film · ARD / Degeto',
+        logline: 'Brandenburg. Eine junge Rumänin liegt tot im Wald, mit Bissspuren. Dass kein Wolf dahintersteckt, ahnt Wildhüterin Sara Jahnke (Maria Simon) vom ersten Moment an. Zusammen mit Kommissar Falk Laue (Jacob Matschenz) führt sie die Jagd nach dem menschlichen Täter tief in menschliche Abgründe. „Der Mensch ist die grausamste Bestie."',
+        crew: '<strong>Darsteller:</strong> Maria Simon, Jacob Matschenz, Jörg Schüttauf, Anna-Lena Schwing, Philipp Wirz u.a.<br><strong>Regie:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Thomas André Szabó & Jakob Ziemnicki<br><strong>Kamera:</strong> Benjamin Dernbecher<br><strong>Schnitt:</strong> Kilian von Keyserlingk<br><strong>Produktion:</strong> U5 für ARD / Degeto',
+        awards: null,
+        trailer: 'https://vimeo.com/868750264'
+      },
+      todesengel: {
+        title: 'Todesengel',
+        meta: '2019 · TV-Film · ARD / Degeto · nach Craig Russell',
+        logline: 'Hamburg. Der Engel von St. Pauli tötet wieder. Hauptkommissar Jan Fabel (Peter Lohmeyer) jagt eine Täterin, die vor zehn Jahren neun Männer — allesamt Sexualstraftäter — mit chirurgischer Präzision ermordet hat. Dabei stößt er auf eine Geschichte, die in einem geheimen Stasi-Ausbildungslager ihren Anfang nahm und die für ihn persönlicher ist als er ahnt. Nach Craig Russells Bestseller »Walküre«.',
+        crew: '<strong>Darsteller:</strong> Peter Lohmeyer, Anne Ratte-Polle, Hans Löw, Proschat Madani, Ella Morgen, Manfred Zapatka, Stephanie Japp, Ina Paule Klink u.a.<br><strong>Regie:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Nils Morten Osburg & Jakob Ziemnicki (nach dem Bestseller „Walküre" von Craig Russell)<br><strong>Kamera:</strong> Jakob Beurle<br><strong>Schnitt:</strong> Kilian von Keyserlingk<br><strong>Musik:</strong> Dirk Dresselhaus<br><strong>Produktion:</strong> Tivoli Film für ARD / Degeto / ORF',
+        awards: null,
+        trailer: 'https://vimeo.com/393254952'
+      },
+      beste: {
+        title: 'Polizeiruf 110 — Das Beste für mein Kind',
+        meta: '2017 · Fernsehfilm · RBB / ARD',
+        logline: 'Der sechs Monate alte Leon wird aus einer Klinik in Frankfurt (Oder) entführt — und Stunden später im polnischen Gorzów Wielkopolski aufgefunden. Der Entführer ist tot. Die deutsch-polnischen Ermittler Lenski (Maria Simon) und Raczek (Lucas Gregorowicz) stoßen dabei auf tragische Familiengeheimnisse und eine illegale Adoption. „Es gibt kein richtiges Leben im Falschen."',
+        crew: '<strong>Darsteller:</strong> Maria Simon, Lucas Gregorowicz, Agnieszka Grochowska, Katharina Heyer, Tobias Oertel, Piotr Stramowski u.a.<br><strong>Regie:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Elke Rössler & Jakob Ziemnicki<br><strong>Kamera:</strong> Gunnar Fuß<br><strong>Schnitt:</strong> Kilian von Keyserlingk<br><strong>Musik:</strong> Dirk Dresselhaus<br><strong>Produktion:</strong> DOKfilm für RBB / ARD / TVP1',
+        awards: null,
+        trailer: 'https://vimeo.com/267762828'
+      },
+      grenzgaenger: {
+        title: 'Polizeiruf 110 — Grenzgänger',
+        meta: '2015 · Fernsehfilm · RBB / ARD',
+        logline: 'An der deutsch-polnischen Grenze: Nach einer Verkehrskontrolle stirbt ein polnischer Student — und das frisch gebildete Ermittlerduo Olga Lenski (Maria Simon) und Adam Raczek (Lucas Gregorowicz) stößt auf tschetschenische Geflüchtete, illegale Kämpfe und ein Familiendrama, das längst die Grenze überschritten hat. „Unter der dünnen Decke der Zivilisation sind wir alle Bestien."',
+        crew: '<strong>Darsteller:</strong> Maria Simon, Lucas Gregorowicz, Danuta Stenka, Manfred Zapatka, Barbara Wysocka, Nilam Farooq, Tamer Yigit u.a.<br><strong>Regie:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Uwe Wilhelm, Claudia Boysen & Jakob Ziemnicki<br><strong>Kamera:</strong> Matthias Fleischer<br><strong>Schnitt:</strong> Melanie Schütze<br><strong>Musik:</strong> Dirk Dresselhaus<br><strong>Produktion:</strong> DOKfilm für RBB / ARD / TVP1',
+        awards: '25. Filmfest Cottbus · Eröffnungsfilm',
+        trailer: 'https://vimeo.com/275985402'
+      },
+      ostern: {
+        title: 'Polnische Ostern',
+        meta: '2011 · Kinofilm · ZDF / Das kleine Fernsehspiel',
+        logline: 'Bäckermeister Werner Grabosch (Henry Hübchen) bricht es das Herz: nach dem Unfalltod seiner Tochter soll seine einzige Enkelin Mathilda bei ihrem polnischen Vater aufwachsen. Das kann Grabosch nicht zulassen. Also fährt er nach Polen, um Mathilda zurückzuholen. Eine Tragikomödie über das oft schwierige Verhältnis der beiden Nachbarn Polen und Deutschland — unverkrampft, warmherzig, humorvoll.',
+        crew: '<strong>Darsteller:</strong> Henry Hübchen, Grażyna Szapołowska u.a.<br><strong>Regie:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Jakob Ziemnicki & Katrin Milhahn<br><strong>Kamera:</strong> Benjamin Dernbecher<br><strong>Schnitt:</strong> Dirk Grau<br><strong>Musik:</strong> Dirk Dresselhaus<br><strong>Produktion:</strong> Polyphon Film & Fernsehen, in Koproduktion mit ZDF / Das kleine Fernsehspiel',
+        awards: 'Max-Ophüls Preis · Wettbewerbsbeitrag · Eröffnungsfilm Tri-Nationales Neiße Filmfest · Prädikat: Besonders Wertvoll',
+        trailer: 'https://vimeo.com/376137860'
+      },
+      mai: {
+        title: '1. Mai — Helden bei der Arbeit',
+        meta: '2008 · Kinofilm · Berlinale · HR / arte',
+        logline: 'Ein elfjähriger Türke, zwei Jugendliche aus der Kleinstadt und ein gehörnter Provinzpolizist: Sie alle verschlägt es am 1. Mai nach Berlin-Kreuzberg — wo wie jedes Jahr die Emotionen hoch kochen. Am Ende des Tages landen alle im Kreuzberger Urban Krankenhaus. „Tanz Deine Revolution."',
+        crew: '<strong>Darsteller:</strong> Jacob Matschenz, Ludwig Trepte, Benjamin Höppner, Hannah Herzsprung, Cemal Subasi, Peter Kurth u.a.<br><strong>Regie:</strong> Jan-Christoph Glaser, Carsten Ludwig, Sven Taddicken, Jakob Ziemnicki<br><strong>Buch:</strong> Carsten Ludwig, Michael Proehl, Oliver Ziegenbalg, Jakob Ziemnicki<br><strong>Kamera:</strong> Daniela Knapp, Daniel Möller, Kolja Raschke, David Schultz<br><strong>Schnitt:</strong> Carsten Eder, Jan-Christoph Glaser, Sebastian Marka<br><strong>Musik:</strong> Christoph Blaser, Dirk Dresselhaus, Steffen Kahles, Rainer von Vielen<br><strong>Produktion:</strong> Jet Film / Frisbee Films / Teamworx, in Koproduktion mit HR / arte',
+        awards: 'Berlinale · Eröffnungsfilm Perspektive Deutsches Kino · Wettbewerbsbeitrag Filmfest Zürich · Torino Film Festival · Chicago Int. Film Festival',
+        trailer: 'https://vimeo.com/394144601'
+      },
+      tompson: {
+        title: 'Tompson Musik',
+        meta: '2004 · Diplomfilm · ZDF / arte / Filmakademie BW',
+        logline: 'Heinrich Tompson (Alexander May) ist ein alter Mann. Er wohnt in einem noch älteren Hotel an der Ostsee. Die Tage vergehen. Eines Tages checkt ein junges Mädchen (Leonie Brandis) im Hotel ein und Tompsons Leben verändert sich… Melancholisch, ruhig, fokussiert auf Zwischenmenschlichkeit. Preisgekrönter Diplomfilm von Jakob Ziemnicki nach der Kurzgeschichte „Hunter Tompson Musik" von Judith Hermann. „Der Tag, an dem dann doch noch einmal etwas geschieht, ist der Freitag vor Ostern."',
+        crew: '<strong>Darsteller:</strong> Alexander May, Leonie Brandis, Marek Kondrat, Aurel Manthei, Herbert Köfer, Elisabeth Scherer<br><strong>Regie & Schnitt:</strong> Jakob Ziemnicki<br><strong>Buch:</strong> Bernd Lange<br><strong>Kamera:</strong> Sten Mende<br><strong>Musik:</strong> Thomas Mehlhorn<br><strong>Produktion:</strong> Filmakademie Baden-Württemberg / ZDF / arte',
+        awards: 'Robert-Bosch-Förderpreis · Prix Europa Nominierung · First Steps Nominierung · Großer Preis der Jury Famafest Lisboa · 1. Spielfilmpreis Skena-up Pristina · Publikumspreis Highlights Ludwigsburg',
+        trailer: 'https://vimeo.com/512247942'
+      }
+    };
+
+    let currentTrailerUrl = '';
+
+    function openModal(id) {
+      const f = films[id];
+      if (!f) return;
+      document.getElementById('modal-title').textContent   = f.title;
+      document.getElementById('modal-meta').textContent    = f.meta;
+      document.getElementById('modal-logline').textContent = f.logline;
+      document.getElementById('modal-crew').innerHTML      = f.crew;
+      const awardsEl = document.getElementById('modal-awards');
+      if (f.awards) {
+        awardsEl.innerHTML = '<strong>Preise & Festivals</strong>' + f.awards;
+        awardsEl.style.display = '';
+      } else {
+        awardsEl.style.display = 'none';
+      }
+      currentTrailerUrl = f.trailer;
+      document.getElementById('modal-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalBackdrop(e) {
+      if (e.target === document.getElementById('modal-backdrop')) closeModal();
+    }
+
+    function openVideo() {
+      const vimeoId = currentTrailerUrl.split('/').pop();
+      document.getElementById('video-iframe').src =
+        'https://player.vimeo.com/video/' + vimeoId + '?autoplay=1&title=0&byline=0&portrait=0';
+      document.getElementById('video-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    let trailerThumbsLoaded = false;
+    function loadTrailerThumbnails() {
+      if (trailerThumbsLoaded) return;
+      trailerThumbsLoaded = true;
+      document.querySelectorAll('.trailer-item[data-vimeo]').forEach(item => {
+        const id = item.dataset.vimeo;
+        const thumb = item.querySelector('.trailer-thumb');
+        if (thumb.style.backgroundImage) return; // bereits manuell gesetzt
+        fetch('https://vimeo.com/api/oembed.json?url=https://vimeo.com/' + id)
+          .then(r => r.json())
+          .then(data => {
+            if (data.thumbnail_url) {
+              thumb.style.backgroundImage = 'url(' + data.thumbnail_url + ')';
+              const fit = item.dataset.thumbFit || 'cover';
+              thumb.style.backgroundSize = fit;
+              thumb.style.backgroundRepeat = 'no-repeat';
+              thumb.style.backgroundPosition = 'center';
+            }
+          })
+          .catch(() => {}); // schwarz bleibt wenn Fetch scheitert
+      });
+    }
+
+    function openVideoDirectly(url) {
+      const vimeoId = url.split('/').pop();
+      document.getElementById('video-iframe').src =
+        'https://player.vimeo.com/video/' + vimeoId + '?autoplay=1&title=0&byline=0&portrait=0';
+      document.getElementById('video-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideo() {
+      document.getElementById('video-backdrop').classList.remove('open');
+      document.getElementById('video-iframe').src = ''; // stoppt Wiedergabe
+      document.body.style.overflow = '';
+    }
+
+    function closeVideoBackdrop(e) {
+      if (e.target === document.getElementById('video-backdrop')) closeVideo();
+    }
+
+    /* ── SLIDESHOW ── */
+    let cur = 0;
+    const slides = document.querySelectorAll('.slide');
+    let dots = [];
+    let timer;
+    let initTimer;
+
+    // Generate dots dynamically
+    const dotsContainer = document.getElementById('slide-dots');
+    slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (i === 0 ? ' active' : '');
+      btn.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(btn);
+      dots.push(btn);
+    });
+
+    function goToSlide(n) {
+      slides[cur].classList.remove('active');
+      dots[cur].classList.remove('active');
+      cur = n;
+      slides[cur].classList.add('active');
+      dots[cur].classList.add('active');
+    }
+
+    function startSlideshow() { timer = setInterval(() => goToSlide((cur + 1) % slides.length), 6000); }
+    function stopSlideshow() { clearTimeout(initTimer); clearInterval(timer); }
+
+    const homeSection = document.getElementById('section-home');
+    homeSection.addEventListener('mouseenter', stopSlideshow);
+    homeSection.addEventListener('mouseleave', startSlideshow);
+
+    // Erstes Bild nur 2,5s — dann regulärer 5s-Takt
+    initTimer = setTimeout(() => { goToSlide(1); startSlideshow(); }, 6000);
+
+    /* ── LIGHTBOX ── */
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    let lbPhotos = [];
+    let lbIndex = 0;
+
+    function buildLightboxPhotos() {
+      lbPhotos = Array.from(document.querySelectorAll('#page-explore .photo-item img')).map(img => img.src);
+    }
+
+    function openLightbox(idx) {
+      buildLightboxPhotos();
+      lbIndex = idx;
+      lightboxImg.src = lbPhotos[lbIndex];
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+
+    function lbPrev() { lbIndex = (lbIndex - 1 + lbPhotos.length) % lbPhotos.length; lightboxImg.src = lbPhotos[lbIndex]; }
+    function lbNext() { lbIndex = (lbIndex + 1) % lbPhotos.length; lightboxImg.src = lbPhotos[lbIndex]; }
+
+    document.querySelectorAll('#page-explore .photo-item').forEach((item, idx) => {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', () => openLightbox(idx));
+    });
+
+    document.getElementById('lightbox-prev').addEventListener('click', e => { e.stopPropagation(); lbPrev(); });
+    document.getElementById('lightbox-next').addEventListener('click', e => { e.stopPropagation(); lbNext(); });
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    document.addEventListener('keydown', e => {
+      if (lightbox.classList.contains('open')) {
+        if (e.key === 'ArrowLeft') lbPrev();
+        if (e.key === 'ArrowRight') lbNext();
+      }
+      if (e.key === 'Escape') { closeVideo(); closeModal(); closeExcerpt(); closeLightbox(); }
+    });
+
+    /* ── PAGE ROUTING ── */
+    /* ── STOFFE / SCREENPLAY PROJEKTE ── */
+    const stoffe = {
+      /* TODO: Einträge nach folgendem Schema ergänzen:
+      projektname: {
+        title: 'Titel',
+        meta: 'Format · Status · Partner',
+        logline: 'Ein-Satz-Beschreibung.',
+        excerpt: 'Erste Absätze des Exposés oder Drehbuchs...',
+        image: 'assets/stoff-projektname.jpg'  // optional
+      },
+      */
+    };
+
+    function openExcerpt(id) {
+      const s = stoffe[id];
+      if (!s) return;
+      document.getElementById('excerpt-title').textContent   = s.title;
+      document.getElementById('excerpt-meta').textContent    = s.meta;
+      document.getElementById('excerpt-logline').textContent = s.logline;
+      document.getElementById('excerpt-text').innerHTML      = s.excerpt;
+      document.getElementById('excerpt-backdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeExcerpt() {
+      document.getElementById('excerpt-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeExcerptBackdrop(e) {
+      if (e.target === document.getElementById('excerpt-backdrop')) closeExcerpt();
+    }
+
+    const pageMap = {
+      home: null,
+      director:   'page-director',
+      screenplay: 'page-screenplay',
+      trailer:    'page-trailer',
+      explore:    'page-explore',
+      manifest:   'page-manifest',
+      about:      'page-about',
+      contact:    'page-contact',
+      impressum:  'page-impressum',
+      datenschutz: 'page-datenschutz',
+    };
+
+    const navLinks = document.querySelectorAll('.nav-box a');
+
+    function showPage(name) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active',
+          a.getAttribute('onclick') && a.getAttribute('onclick').includes(`'${name}'`)
+        );
+      });
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+      const id = pageMap[name];
+      if (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('visible');
+          setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (name === 'trailer') loadTrailerThumbnails();
+    }
+  </script>
+
+</body>
+</html>
