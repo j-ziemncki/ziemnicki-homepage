@@ -409,10 +409,11 @@
         align-items: flex-start;
       }
       .film-card-overlay { display: none; }
-      /* Drehbuch/Filmografie table: hide format + detail columns, show only year + title */
-      .filmografie-table td:nth-child(3),
-      .filmografie-table td:nth-child(4) { display: none; }
-      #page-screenplay .filmografie-table td:nth-child(2) { white-space: normal; }
+      /* Drehbuch table: horizontal scroll on mobile, all columns visible */
+      #page-screenplay .scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      #page-screenplay .filmografie-table td:nth-child(2) { white-space: normal; min-width: 120px; }
+      #page-screenplay .filmografie-table td:nth-child(3) { min-width: 70px; }
+      #page-screenplay .filmografie-table td:nth-child(4) { min-width: 160px; }
       .filmografie-table td { font-size: 0.78rem; padding: 0.5rem 0.5rem 0.5rem 0; }
       .filmografie-table td:nth-child(1) { width: 4rem; min-width: 4rem; }
     }
@@ -444,18 +445,18 @@
   <section id="section-home">
     <div class="slide active"><img src="assets/slide_01.jpg" alt="" style="object-position: center bottom;"></div>
     <div class="slide"><img src="assets/02_3.jpg" alt=""></div>
-    <div class="slide"><img src="assets/slide_03.jpg" alt="" style="object-position: 20% center;"></div>
+    <div class="slide"><img src="assets/slide_03.jpg" alt="" style="object-position: right center;"></div>
     <div class="slide"><img src="assets/slide_04.jpg" alt=""></div>
     <div class="slide"><img src="assets/PolnischeOstern1.jpg" alt=""></div>
     <div class="slide"><img src="assets/slide_11.jpg" alt=""></div>
     <div class="slide"><img src="assets/slide_05_v2.jpg" alt=""></div>
-    <div class="slide"><img src="assets/slide_07.jpg" alt="" style="object-position: 72% center;"></div>
-    <div class="slide"><img src="assets/slide_08.jpg" alt="" style="object-position: 8% center;"></div>
+    <div class="slide"><img src="assets/slide_07.jpg" alt="" style="object-position: left center;"></div>
+    <div class="slide"><img src="assets/slide_08.jpg" alt="" style="object-position: right center;"></div>
     <div class="slide"><img src="assets/slide_09_v2.jpg" alt=""></div>
     <div class="slide"><img src="assets/slide_12.jpg" alt="" style="object-position: center top;"></div>
     <div class="slide"><img src="assets/slide_10_v2.jpg" alt=""></div>
     <div class="slide"><img src="assets/slide_13_v2.jpg" alt=""></div>
-    <div class="slide"><img src="assets/slide_14.jpg" alt="" style="object-position: 78% center;"></div>
+    <div class="slide"><img src="assets/slide_14.jpg" alt="" style="object-position: left center;"></div>
 
     <div class="slide-dots" id="slide-dots"></div>
   </section>
@@ -539,7 +540,7 @@
 
   <!-- SCREENPLAY -->
   <div id="page-screenplay" class="page">
-    <div style="max-width:760px;">
+    <div class="scroll-wrap" style="max-width:760px;">
       <table class="filmografie-table">
         <tr><td style="color:#999;width:5.5rem;">2026</td><td><strong>„Showtrial"</strong></td><td style="color:#999;width:8rem;">Serie</td><td>Serienadaption mit Marianne Wendt · Windlight Pictures</td></tr>
         <tr><td style="color:#999;">2025</td><td><strong>„Tatort Hamburg – Romina"</strong></td><td style="color:#999;">TV-Reihe</td><td>Stoffentwicklung mit Thomas André Szabó · Wüstefilm</td></tr>
